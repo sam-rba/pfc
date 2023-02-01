@@ -12,3 +12,7 @@ test: format
 
 format:
 	cargo fmt --all
+
+install:
+	cargo build --release
+	cp ./target/release/pfc ~/.local/bin/
