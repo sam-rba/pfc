@@ -43,15 +43,13 @@ impl Calculator {
                         self.input_buffer.push(c);
                     } else if let Ok(op) = Operator::parse(c) {
                         if self.input_buffer.len() > 0 {
-                            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-                            self.input_buffer = String::new();
+                            self.push_buffer_to_stack();
                         }
                         self.perform_operation(op);
                     }
                 }
                 KeyCode::Enter if self.input_buffer.len() > 0 => {
-                    self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-                    self.input_buffer = String::new();
+                    self.push_buffer_to_stack();
                 }
                 KeyCode::Backspace => {
                     self.input_buffer.pop();
@@ -104,6 +102,11 @@ impl Calculator {
             Operator::Mul => self.stack.push(lhs * rhs),
             Operator::Div => self.stack.push(lhs / rhs),
         }
+    }
+
+    fn push_buffer_to_stack(&mut self) {
+        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+        self.input_buffer = String::new();
     }
 }
 
