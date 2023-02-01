@@ -15,12 +15,12 @@ enum Signal {
 }
 
 #[derive(Default)]
-struct App {
+struct Calculator {
     stack: Vec<f64>,
     input_buffer: String,
 }
 
-impl App {
+impl Calculator {
     fn handle_input(&mut self, key: KeyEvent) -> Signal {
         match key.modifiers {
             KeyModifiers::CONTROL => match key.code {
@@ -108,19 +108,19 @@ impl App {
 }
 
 fn main() -> io::Result<()> {
-    let app = App::default();
+    let calculator = Calculator::default();
     let mut terminal = ui::init_terminal()?;
-    let result = run(app, &mut terminal);
+    let result = run(calculator, &mut terminal);
     ui::cleanup_terminal(terminal)?;
     result
 }
 
-fn run<B: Backend>(mut app: App, terminal: &mut Terminal<B>) -> io::Result<()> {
+fn run<B: Backend>(mut calculator: Calculator, terminal: &mut Terminal<B>) -> io::Result<()> {
     loop {
-        terminal.draw(|f| app.draw(f))?;
+        terminal.draw(|f| calculator.draw(f))?;
 
         if let Event::Key(key) = event::read()? {
-            if let Signal::Exit = app.handle_input(key) {
+            if let Signal::Exit = calculator.handle_input(key) {
                 return Ok(());
             }
         }
