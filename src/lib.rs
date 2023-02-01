@@ -31,6 +31,7 @@ impl Calculator {
             Operator::Sub => self.stack.push(lhs - rhs),
             Operator::Mul => self.stack.push(lhs * rhs),
             Operator::Div => self.stack.push(lhs / rhs),
+            Operator::Exp => self.stack.push(lhs.powf(rhs)),
         }
     }
 }
@@ -40,6 +41,7 @@ pub enum Operator {
     Sub,
     Mul,
     Div,
+    Exp,
 }
 
 impl Operator {
@@ -49,6 +51,7 @@ impl Operator {
             '-' => Ok(Self::Sub),
             '*' => Ok(Self::Mul),
             '/' => Ok(Self::Div),
+            '^' => Ok(Self::Exp),
             _ => Err(ParseOperatorError(c)),
         }
     }
