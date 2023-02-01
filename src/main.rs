@@ -7,7 +7,7 @@ use tui::{
     Frame, Terminal,
 };
 
-use pfc::ui;
+use pfc::{ui, Operator};
 
 enum Signal {
     None,
@@ -15,7 +15,10 @@ enum Signal {
 }
 
 #[derive(Default)]
-struct App {}
+struct App {
+    stack: Vec<f64>,
+    input_buffer: String,
+}
 
 impl App {
     fn handle_input(&mut self, key: KeyEvent) -> Signal {
@@ -30,6 +33,24 @@ impl App {
                 KeyCode::Char('q') => {
                     return Signal::Exit;
                 }
+                KeyCode::Char(c) => {
+                    if c.is_ascii_digit() {
+                        self.input_buffer.push(c);
+                    } else if c == '.' && !self.input_buffer.contains('.') {
+                        self.input_buffer.push(c);
+                    } else if let Ok(op) = Operator::parse(c) {
+                        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                        self.input_buffer = String::new();
+                        self.perform_operation(op);
+                    }
+                }
+                KeyCode::Enter => {
+                    self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                    self.input_buffer = String::new();
+                }
+                KeyCode::Backspace => {
+                    self.input_buffer.pop();
+                }
                 _ => {}
             },
             _ => {}
@@ -42,7 +63,28 @@ impl App {
             .direction(Direction::Vertical)
             .constraints([Constraint::Percentage(100)].as_ref())
             .split(f.size());
-        f.render_widget(Paragraph::new("test"), chunks[0]);
+        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[0]);
+    }
+
+    fn perform_operation(&mut self, op: Operator) {
+        let rhs = match self.stack.pop() {
+            Some(f) => f,
+            None => {
+                return;
+            }
+        };
+        let lhs = match self.stack.pop() {
+            Some(f) => f,
+            None => {
+                return;
+            }
+        };
+        match op {
+            Operator::Add => self.stack.push(lhs + rhs),
+            Operator::Sub => self.stack.push(lhs - rhs),
+            Operator::Mul => self.stack.push(lhs * rhs),
+            Operator::Div => self.stack.push(lhs / rhs),
+        }
     }
 }
 
