@@ -1,17 +1,13 @@
-use crossterm::{
-    event::{
-        self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers,
-    },
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-};
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
 use std::io;
 use tui::{
-    backend::{Backend, CrosstermBackend},
+    backend::Backend,
     layout::{Constraint, Direction, Layout},
     widgets::Paragraph,
     Frame, Terminal,
 };
+
+use pfc::ui;
 
 enum Signal {
     None,
@@ -52,32 +48,10 @@ impl App {
 
 fn main() -> io::Result<()> {
     let app = App::default();
-    let mut terminal = init_terminal()?;
+    let mut terminal = ui::init_terminal()?;
     let result = run(app, &mut terminal);
-    cleanup_terminal(terminal)?;
+    ui::cleanup_terminal(terminal)?;
     result
-}
-
-fn init_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>, io::Error> {
-    enable_raw_mode()?;
-    let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
-    let backend = CrosstermBackend::new(stdout);
-    Terminal::new(backend)
-}
-
-fn cleanup_terminal<B>(mut terminal: Terminal<B>) -> Result<(), io::Error>
-where
-    B: Backend + io::Write,
-{
-    disable_raw_mode()?;
-    execute!(
-        terminal.backend_mut(),
-        LeaveAlternateScreen,
-        DisableMouseCapture,
-    )?;
-    terminal.show_cursor()?;
-    Ok(())
 }
 
 fn run<B: Backend>(mut app: App, terminal: &mut Terminal<B>) -> io::Result<()> {

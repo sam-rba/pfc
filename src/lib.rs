@@ -1,3 +1,5 @@
+pub mod ui;
+
 enum Token {
     Operand(f64),
     Operator(Operator),
