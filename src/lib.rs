@@ -1,4 +1,39 @@
+mod input;
 pub mod ui;
+
+#[derive(Default)]
+pub struct Calculator {
+    stack: Vec<f64>,
+    input_buffer: String,
+}
+
+impl Calculator {
+    fn push_buffer_to_stack(&mut self) {
+        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+        self.input_buffer = String::new();
+    }
+
+    fn perform_operation(&mut self, op: Operator) {
+        let rhs = match self.stack.pop() {
+            Some(f) => f,
+            None => {
+                return;
+            }
+        };
+        let lhs = match self.stack.pop() {
+            Some(f) => f,
+            None => {
+                return;
+            }
+        };
+        match op {
+            Operator::Add => self.stack.push(lhs + rhs),
+            Operator::Sub => self.stack.push(lhs - rhs),
+            Operator::Mul => self.stack.push(lhs * rhs),
+            Operator::Div => self.stack.push(lhs / rhs),
+        }
+    }
+}
 
 pub enum Operator {
     Add,
@@ -20,3 +55,8 @@ impl Operator {
 }
 
 pub struct ParseOperatorError(char);
+
+pub enum Signal {
+    None,
+    Exit,
+}

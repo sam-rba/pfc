@@ -6,8 +6,36 @@ use crossterm::{
 use std::io;
 use tui::{
     backend::{Backend, CrosstermBackend},
-    Terminal,
+    layout::{Constraint, Direction, Layout},
+    widgets::{List, ListItem, Paragraph},
+    Frame, Terminal,
 };
+
+use crate::Calculator;
+
+impl Calculator {
+    pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(
+                [
+                    Constraint::Max(u16::MAX),
+                    Constraint::Length(self.stack.len() as u16),
+                    Constraint::Length(1),
+                ]
+                .as_ref(),
+            )
+            .split(f.size());
+
+        let items: Vec<ListItem> = (self.stack)
+            .iter()
+            .map(|f| ListItem::new(format!("{}", f)))
+            .collect();
+        f.render_widget(List::new(items), chunks[1]);
+
+        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[2]);
+    }
+}
 
 pub fn init_terminal() -> Result<Terminal<CrosstermBackend<io::Stdout>>, io::Error> {
     enable_raw_mode()?;
