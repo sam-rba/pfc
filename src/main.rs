@@ -49,7 +49,7 @@ impl App {
                         self.perform_operation(op);
                     }
                 }
-                KeyCode::Enter => {
+                KeyCode::Enter if self.input_buffer.len() > 0 => {
                     self.stack.push(self.input_buffer.parse::<f64>().unwrap());
                     self.input_buffer = String::new();
                 }
@@ -66,17 +66,23 @@ impl App {
     fn draw<B: Backend>(&self, f: &mut Frame<B>) {
         let chunks = Layout::default()
             .direction(Direction::Vertical)
-            .constraints([Constraint::Length(1), Constraint::Percentage(100)].as_ref())
+            .constraints(
+                [
+                    Constraint::Max(u16::MAX),
+                    Constraint::Length(self.stack.len() as u16),
+                    Constraint::Length(1),
+                ]
+                .as_ref(),
+            )
             .split(f.size());
-
-        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[0]);
 
         let items: Vec<ListItem> = (self.stack)
             .iter()
-            .rev()
             .map(|f| ListItem::new(format!("{}", f)))
             .collect();
         f.render_widget(List::new(items), chunks[1]);
+
+        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[2]);
     }
 
     fn perform_operation(&mut self, op: Operator) {
