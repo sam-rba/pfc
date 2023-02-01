@@ -26,13 +26,13 @@ impl Calculator {
                 return;
             }
         };
-        match op {
-            Operator::Add => self.stack.push(lhs + rhs),
-            Operator::Sub => self.stack.push(lhs - rhs),
-            Operator::Mul => self.stack.push(lhs * rhs),
-            Operator::Div => self.stack.push(lhs / rhs),
-            Operator::Exp => self.stack.push(lhs.powf(rhs)),
-        }
+        self.stack.push(match op {
+            Operator::Add => lhs + rhs,
+            Operator::Sub => lhs - rhs,
+            Operator::Mul => lhs * rhs,
+            Operator::Div => lhs / rhs,
+            Operator::Exp => lhs.powf(rhs),
+        });
     }
 }
 
