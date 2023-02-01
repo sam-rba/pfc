@@ -3,7 +3,7 @@ use std::io;
 use tui::{
     backend::Backend,
     layout::{Constraint, Direction, Layout},
-    widgets::Paragraph,
+    widgets::{List, ListItem, Paragraph},
     Frame, Terminal,
 };
 
@@ -37,10 +37,15 @@ impl App {
                     if c.is_ascii_digit() {
                         self.input_buffer.push(c);
                     } else if c == '.' && !self.input_buffer.contains('.') {
+                        if self.input_buffer.len() == 0 {
+                            self.input_buffer.push('0');
+                        }
                         self.input_buffer.push(c);
                     } else if let Ok(op) = Operator::parse(c) {
-                        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-                        self.input_buffer = String::new();
+                        if self.input_buffer.len() > 0 {
+                            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                            self.input_buffer = String::new();
+                        }
                         self.perform_operation(op);
                     }
                 }
@@ -61,9 +66,17 @@ impl App {
     fn draw<B: Backend>(&self, f: &mut Frame<B>) {
         let chunks = Layout::default()
             .direction(Direction::Vertical)
-            .constraints([Constraint::Percentage(100)].as_ref())
+            .constraints([Constraint::Length(1), Constraint::Percentage(100)].as_ref())
             .split(f.size());
+
         f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[0]);
+
+        let items: Vec<ListItem> = (self.stack)
+            .iter()
+            .rev()
+            .map(|f| ListItem::new(format!("{}", f)))
+            .collect();
+        f.render_widget(List::new(items), chunks[1]);
     }
 
     fn perform_operation(&mut self, op: Operator) {
