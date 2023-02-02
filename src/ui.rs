@@ -15,24 +15,8 @@ use crate::Calculator;
 
 impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
-        let chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints(
-                [
-                    Constraint::Max(u16::MAX),
-                    Constraint::Length(self.stack.len() as u16),
-                    Constraint::Length(1),
-                ]
-                .as_ref(),
-            )
-            .split(f.size());
-
-        let items: Vec<ListItem> = (self.stack)
-            .iter()
-            .map(|f| ListItem::new(format!("{}", f)))
-            .collect();
-        f.render_widget(List::new(items), chunks[1]);
-
+        let chunks = layout(self.stack.len()).split(f.size());
+        f.render_widget(stack_list(&self.stack), chunks[1]);
         f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[2]);
     }
 }
@@ -57,4 +41,26 @@ where
     )?;
     terminal.show_cursor()?;
     Ok(())
+}
+
+fn layout(stack_size: usize) -> Layout {
+    Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(
+            [
+                Constraint::Max(u16::MAX),
+                Constraint::Length(stack_size as u16),
+                Constraint::Length(1),
+            ]
+            .as_ref(),
+        )
+}
+
+fn stack_list(stack: &Vec<f64>) -> List {
+    List::new(
+        stack
+            .iter()
+            .map(|f| ListItem::new(format!("{}", f)))
+            .collect::<Vec<ListItem>>(),
+    )
 }
