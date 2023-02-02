@@ -5,9 +5,8 @@ use tui::{backend::Backend, Terminal};
 use pfc::{ui, Calculator, Signal};
 
 fn main() -> io::Result<()> {
-    let calculator = Calculator::default();
     let mut terminal = ui::init_terminal()?;
-    let result = run(calculator, &mut terminal);
+    let result = run(Calculator::default(), &mut terminal);
     ui::cleanup_terminal(terminal)?;
     result
 }
