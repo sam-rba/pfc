@@ -15,6 +15,9 @@ impl Calculator {
                 KeyCode::Char('q') => {
                     return Signal::Exit;
                 }
+                KeyCode::Char('j' | 'k') => {
+                    self.swap();
+                }
                 KeyCode::Char(c) => {
                     self.push_to_buffer(c);
                 }
@@ -50,5 +53,14 @@ impl Calculator {
     fn push_buffer_to_stack(&mut self) {
         self.stack.push(self.input_buffer.parse::<f64>().unwrap());
         self.input_buffer = String::new();
+    }
+
+    fn swap(&mut self) {
+        if let Some(f) = self.stack.pop() {
+            if self.input_buffer.len() > 0 {
+                self.push_buffer_to_stack();
+            }
+            self.input_buffer = format!("{}", f);
+        }
     }
 }
