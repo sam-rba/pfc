@@ -8,11 +8,6 @@ pub struct Calculator {
 }
 
 impl Calculator {
-    fn push_buffer_to_stack(&mut self) {
-        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-        self.input_buffer = String::new();
-    }
-
     fn perform_operation(&mut self, op: Operator) {
         let rhs = match self.stack.pop() {
             Some(f) => f,
