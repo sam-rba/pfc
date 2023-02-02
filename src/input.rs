@@ -21,7 +21,7 @@ impl Calculator {
                 KeyCode::Char(c) => {
                     self.push_to_buffer(c);
                 }
-                KeyCode::Enter if self.input_buffer.len() > 0 => {
+                KeyCode::Enter => {
                     self.push_buffer_to_stack();
                 }
                 KeyCode::Backspace => {
@@ -43,23 +43,21 @@ impl Calculator {
             }
             self.input_buffer.push(c);
         } else if let Ok(op) = Operator::parse(c) {
-            if self.input_buffer.len() > 0 {
-                self.push_buffer_to_stack();
-            }
+            self.push_buffer_to_stack();
             self.perform_operation(op);
         }
     }
 
     fn push_buffer_to_stack(&mut self) {
-        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-        self.input_buffer = String::new();
+        if self.input_buffer.len() > 0 {
+            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            self.input_buffer = String::new();
+        }
     }
 
     fn swap(&mut self) {
         if let Some(f) = self.stack.pop() {
-            if self.input_buffer.len() > 0 {
-                self.push_buffer_to_stack();
-            }
+            self.push_buffer_to_stack();
             self.input_buffer = format!("{}", f);
         }
     }
