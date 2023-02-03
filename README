@@ -1,1 +1,28 @@
-Postfix Calculator
+pfc - postfix calculator
+========================
+pfc is an interactive postfix / reverse Polish notation calculator for the
+terminal.
+
+
+Requirements
+------------
+Cargo, the Rust package manager, is required to build pfc.
+It can be installed from most Linux package managers or like so:
+
+	curl https://sh.rustup.rs -sSf | sh
+
+
+Installation
+------------
+Edit config.mk to change where pfc will be installed (/usr/local by default).
+
+Enter the following (as root) to build and install pfc:
+
+	make install
+
+
+Usage
+-----
+See the man page for details:
+
+	man pfc
