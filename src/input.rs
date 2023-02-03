@@ -16,6 +16,9 @@ impl Calculator {
                     return Signal::Exit;
                 }
                 KeyCode::Char('j' | 'k') => self.swap(),
+                KeyCode::Char('d') => {
+                    self.input_buffer = String::new();
+                }
                 KeyCode::Char(c) => self.push_to_buffer(c),
                 KeyCode::Enter => self.push_buffer_to_stack(),
                 KeyCode::Backspace => {
