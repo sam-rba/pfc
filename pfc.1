@@ -1,0 +1,52 @@
+.TH PFC 1 pfc\-VERSION
+.SH NAME
+pfc \- postfix calculator
+.SH SYNOPSIS
+.B pfc
+.SH DESCRIPTION
+pfc is an interactive postfix, or reverse Polish notation, calculator.
+.SH USAGE
+.SS Keyboard commands
+.TP
+.B q
+Quit.
+.TP
+.B [0..9]
+Enter a digit into the input buffer.
+pfc works with floating point numbers so the
+.B .
+character is OK as well.
+.TP
+.B Backspace
+Remove a digit from the input buffer.
+.TP
+.B Enter
+Push the number in the input buffer to the stack.
+.TP
+.B j
+Swap the bottom (most recently pushed) item on the stack with the input buffer.
+If the input buffer is empty this simply moves the most recently pushed item
+back into the input buffer.
+.TP
+.B k
+The same as
+.BR j .
+.TP
+.B d
+Delete the contents of the input buffer.
+.SS Operators
+.TP
+.B +
+Addition.
+.TP
+.B -
+Subtraction.
+.TP
+.B *
+Multiplication.
+.TP
+.B /
+Division.
+.TP
+.B ^
+Exponentiation.
