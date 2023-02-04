@@ -6,8 +6,8 @@ use crossterm::{
 use std::io;
 use tui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Constraint, Direction, Layout},
-    widgets::{List, ListItem, Paragraph},
+    layout::{Alignment, Constraint, Direction, Layout},
+    widgets::{List, ListItem, Paragraph, Widget},
     Frame, Terminal,
 };
 
@@ -16,8 +16,9 @@ use crate::Calculator;
 impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
         let chunks = layout(self.stack.len()).split(f.size());
-        f.render_widget(stack_list(&self.stack), chunks[1]);
-        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[2]);
+        f.render_widget(version_number_widget(), chunks[0]);
+        f.render_widget(stack_widget(&self.stack), chunks[2]);
+        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[3]);
     }
 }
 
@@ -48,6 +49,7 @@ fn layout(stack_size: usize) -> Layout {
         .direction(Direction::Vertical)
         .constraints(
             [
+                Constraint::Length(1),
                 Constraint::Max(u16::MAX),
                 Constraint::Length(stack_size as u16),
                 Constraint::Length(1),
@@ -56,11 +58,16 @@ fn layout(stack_size: usize) -> Layout {
         )
 }
 
-fn stack_list(stack: &Vec<f64>) -> List {
+fn stack_widget(stack: &Vec<f64>) -> impl Widget {
     List::new(
         stack
             .iter()
             .map(|f| ListItem::new(format!("{}", f)))
             .collect::<Vec<ListItem>>(),
     )
+}
+
+fn version_number_widget() -> impl Widget {
+    Paragraph::new(format!("pfc-{}", option_env!("CARGO_PKG_VERSION").unwrap()))
+        .alignment(Alignment::Center)
 }
