@@ -6,19 +6,25 @@ use crossterm::{
 use std::io;
 use tui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Alignment, Constraint, Direction, Layout},
-    widgets::{List, ListItem, Paragraph, Widget},
+    layout::{Alignment, Constraint, Direction, Layout, Rect},
+    widgets::{Block, Borders, List, ListItem, Paragraph, Widget},
     Frame, Terminal,
 };
 
 use crate::Calculator;
 
+const WIDTH: u16 = 32;
+
 impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
-        let chunks = layout(self.stack.len()).split(f.size());
+        let chunks = layout(self.stack.len(), f.size());
         f.render_widget(version_number_widget(), chunks[0]);
         f.render_widget(stack_widget(&self.stack), chunks[2]);
-        f.render_widget(Paragraph::new(self.input_buffer.as_str()), chunks[3]);
+        f.render_widget(
+            Paragraph::new(format!("> {}", self.input_buffer))
+                .block(Block::default().borders(Borders::ALL)),
+            chunks[3],
+        );
     }
 }
 
@@ -44,27 +50,34 @@ where
     Ok(())
 }
 
-fn layout(stack_size: usize) -> Layout {
+fn layout(stack_size: usize, frame_size: Rect) -> Vec<Rect> {
+    let columns = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Length(WIDTH), Constraint::Max(u16::MAX)].as_ref())
+        .split(frame_size);
+
     Layout::default()
         .direction(Direction::Vertical)
         .constraints(
             [
                 Constraint::Length(1),
                 Constraint::Max(u16::MAX),
-                Constraint::Length(stack_size as u16),
-                Constraint::Length(1),
+                Constraint::Length(stack_size as u16 + 2),
+                Constraint::Length(3),
             ]
             .as_ref(),
         )
+        .split(columns[0])
 }
 
 fn stack_widget(stack: &Vec<f64>) -> impl Widget {
     List::new(
         stack
             .iter()
-            .map(|f| ListItem::new(format!("{}", f)))
+            .map(|f| ListItem::new(format!("  {}", f)))
             .collect::<Vec<ListItem>>(),
     )
+    .block(Block::default().borders(Borders::ALL))
 }
 
 fn version_number_widget() -> impl Widget {
