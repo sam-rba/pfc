@@ -12,10 +12,7 @@ impl Calculator {
                 _ => {}
             },
             KeyModifiers::SHIFT => match key.code {
-                KeyCode::Char('D') => {
-                    self.input_buffer = String::new();
-                    self.stack = Vec::new();
-                }
+                KeyCode::Char('D') => self.clear(),
                 _ => {}
             },
             KeyModifiers::NONE => match key.code {
@@ -47,6 +44,8 @@ impl Calculator {
         return Signal::None;
     }
 
+    // Push a character into the input buffer. If the character is an operator,
+    // the particular operation is performed.
     fn push_to_buffer(&mut self, c: char) {
         if c == '.' && !self.input_buffer.contains('.') {
             if self.input_buffer.len() == 0 {
@@ -62,10 +61,18 @@ impl Calculator {
         }
     }
 
+    // Swap the bottom of the stack and the input buffer. If the input buffer
+    // is empty, this simply pops from the stack into the input buffer.
     fn swap(&mut self) {
         if let Some(f) = self.stack.pop() {
             self.stack.push(self.input_buffer.parse::<f64>().unwrap());
             self.input_buffer = format!("{}", f);
         }
+    }
+
+    // Clear stack and input buffer.
+    fn clear(&mut self) {
+        self.input_buffer = String::new();
+        self.stack = Vec::new();
     }
 }
