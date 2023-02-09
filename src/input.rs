@@ -27,6 +27,9 @@ impl Calculator {
                     self.input_buffer = String::new();
                 }
                 KeyCode::Char(c) => self.push_to_buffer(c),
+                KeyCode::Backspace => {
+                    self.input_buffer.pop();
+                }
                 KeyCode::Enter if self.input_buffer.len() > 0 => {
                     if let Ok(func) = Function::parse(&self.input_buffer) {
                         if let Some(f) = self.stack.pop() {
@@ -36,9 +39,6 @@ impl Calculator {
                         self.stack.push(self.input_buffer.parse::<f64>().unwrap());
                     }
                     self.input_buffer = String::new();
-                }
-                KeyCode::Backspace => {
-                    self.input_buffer.pop();
                 }
                 _ => {}
             },
