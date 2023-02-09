@@ -13,11 +13,9 @@ use tui::{
     Frame, Terminal,
 };
 
-use crate::Calculator;
+use crate::{Calculator, Function};
 
 const WIDTH: u16 = 32;
-
-const FUNCTIONS: [&str; 3] = ["sin", "cos", "tan"];
 
 impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
@@ -85,7 +83,7 @@ fn input_buffer_widget(input_buffer: &str) -> impl Widget {
         Span::raw(">"),
         Span::styled(
             format!(" {}", input_buffer),
-            if FUNCTIONS.contains(&input_buffer) {
+            if let Ok(_) = Function::parse(&input_buffer) {
                 Style::default().add_modifier(Modifier::BOLD)
             } else {
                 Style::default()
