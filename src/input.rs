@@ -11,6 +11,13 @@ impl Calculator {
                 }
                 _ => {}
             },
+            KeyModifiers::SHIFT => match key.code {
+                KeyCode::Char('D') => {
+                    self.input_buffer = String::new();
+                    self.stack = Vec::new();
+                }
+                _ => {}
+            },
             KeyModifiers::NONE => match key.code {
                 KeyCode::Char('q') => {
                     return Signal::Exit;
