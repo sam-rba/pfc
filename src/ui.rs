@@ -83,10 +83,9 @@ fn input_buffer_widget(input_buffer: &str) -> impl Widget {
         Span::raw(">"),
         Span::styled(
             format!(" {}", input_buffer),
-            if let Ok(_) = Function::parse(&input_buffer) {
-                Style::default().add_modifier(Modifier::BOLD)
-            } else {
-                Style::default()
+            match Function::parse(&input_buffer) {
+                Ok(_) => Style::default().add_modifier(Modifier::BOLD),
+                Err(_) => Style::default(),
             },
         ),
     ]))
