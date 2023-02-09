@@ -53,7 +53,9 @@ impl Calculator {
             }
             self.input_buffer.push(c);
         } else if let Ok(op) = Operator::parse(c) {
-            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            if self.input_buffer.len() > 0 {
+                self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            }
             self.input_buffer = String::new();
             self.perform_operation(op);
         } else {
@@ -65,7 +67,9 @@ impl Calculator {
     // is empty, this simply pops from the stack into the input buffer.
     fn swap(&mut self) {
         if let Some(f) = self.stack.pop() {
-            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            if self.input_buffer.len() > 0 {
+                self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            }
             self.input_buffer = format!("{}", f);
         }
     }
