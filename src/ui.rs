@@ -17,7 +17,7 @@ use crate::Calculator;
 
 const WIDTH: u16 = 32;
 
-const FUNCTIONS: [&str; 1] = ["sin"];
+const FUNCTIONS: [&str; 3] = ["sin", "cos", "tan"];
 
 impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {

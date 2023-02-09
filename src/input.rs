@@ -59,6 +59,16 @@ impl Calculator {
                     *f = f.sin();
                 }
             }
+            "cos" => {
+                if let Some(f) = self.stack.last_mut() {
+                    *f = f.cos();
+                }
+            }
+            "tan" => {
+                if let Some(f) = self.stack.last_mut() {
+                    *f = f.tan();
+                }
+            }
             _ => {
                 if self.input_buffer.len() > 0 {
                     self.stack.push(self.input_buffer.parse::<f64>().unwrap());
