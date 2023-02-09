@@ -8,7 +8,7 @@ pub struct Calculator {
 }
 
 impl Calculator {
-    fn op(&mut self, op: Operator) {
+    fn perform_operation(&mut self, op: Operator) {
         let rhs = match self.stack.pop() {
             Some(f) => f,
             None => {
@@ -70,11 +70,11 @@ impl Function {
         }
     }
 
-    fn func(&self) -> impl Fn(f64) -> f64 {
+    fn call_on(&self, f: f64) -> f64 {
         match self {
-            Self::Sin => |f: f64| f.sin(),
-            Self::Cos => |f: f64| f.cos(),
-            Self::Tan => |f: f64| f.tan(),
+            Self::Sin => f.sin(),
+            Self::Cos => f.cos(),
+            Self::Tan => f.tan(),
         }
     }
 }

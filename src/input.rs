@@ -33,7 +33,7 @@ impl Calculator {
                 KeyCode::Enter if self.input_buffer.len() > 0 => {
                     if let Ok(func) = Function::parse(&self.input_buffer) {
                         if let Some(f) = self.stack.pop() {
-                            self.stack.push(func.func()(f));
+                            self.stack.push(func.call_on(f));
                         }
                     } else {
                         self.stack.push(self.input_buffer.parse::<f64>().unwrap());
@@ -56,7 +56,7 @@ impl Calculator {
         } else if let Ok(op) = Operator::parse(c) {
             self.stack.push(self.input_buffer.parse::<f64>().unwrap());
             self.input_buffer = String::new();
-            self.op(op);
+            self.perform_operation(op);
         } else {
             self.input_buffer.push(c);
         }
