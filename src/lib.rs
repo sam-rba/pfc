@@ -8,7 +8,7 @@ pub struct Calculator {
 }
 
 impl Calculator {
-    fn perform_operation(&mut self, op: Operator) {
+    fn op(&mut self, op: Operator) {
         let rhs = match self.stack.pop() {
             Some(f) => f,
             None => {
@@ -53,6 +53,33 @@ impl Operator {
 }
 
 pub struct ParseOperatorError(char);
+
+enum Function {
+    Sin,
+    Cos,
+    Tan,
+}
+
+impl Function {
+    fn parse(s: &str) -> Result<Self, ParseFunctionError> {
+        match s {
+            "sin" => Ok(Self::Sin),
+            "cos" => Ok(Self::Cos),
+            "tan" => Ok(Self::Tan),
+            _ => Err(ParseFunctionError(s.to_string())),
+        }
+    }
+
+    fn func(&self) -> impl Fn(f64) -> f64 {
+        match self {
+            Self::Sin => |f: f64| f.sin(),
+            Self::Cos => |f: f64| f.cos(),
+            Self::Tan => |f: f64| f.tan(),
+        }
+    }
+}
+
+struct ParseFunctionError(String);
 
 pub enum Signal {
     None,

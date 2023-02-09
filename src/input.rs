@@ -1,6 +1,6 @@
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
-use crate::{Calculator, Operator, Signal};
+use crate::{Calculator, Function, Operator, Signal};
 
 impl Calculator {
     pub fn handle_input(&mut self, key: KeyEvent) -> Signal {
@@ -27,7 +27,16 @@ impl Calculator {
                     self.input_buffer = String::new();
                 }
                 KeyCode::Char(c) => self.push_to_buffer(c),
-                KeyCode::Enter => self.push_buffer_to_stack(),
+                KeyCode::Enter if self.input_buffer.len() > 0 => {
+                    if let Ok(func) = Function::parse(&self.input_buffer) {
+                        if let Some(f) = self.stack.pop() {
+                            self.stack.push(func.func()(f));
+                        }
+                    } else {
+                        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                    }
+                    self.input_buffer = String::new();
+                }
                 KeyCode::Backspace => {
                     self.input_buffer.pop();
                 }
@@ -45,42 +54,17 @@ impl Calculator {
             }
             self.input_buffer.push(c);
         } else if let Ok(op) = Operator::parse(c) {
-            self.push_buffer_to_stack();
-            self.perform_operation(op);
+            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+            self.input_buffer = String::new();
+            self.op(op);
         } else {
             self.input_buffer.push(c);
         }
     }
 
-    fn push_buffer_to_stack(&mut self) {
-        match self.input_buffer.as_str() {
-            "sin" => {
-                if let Some(f) = self.stack.last_mut() {
-                    *f = f.sin();
-                }
-            }
-            "cos" => {
-                if let Some(f) = self.stack.last_mut() {
-                    *f = f.cos();
-                }
-            }
-            "tan" => {
-                if let Some(f) = self.stack.last_mut() {
-                    *f = f.tan();
-                }
-            }
-            _ => {
-                if self.input_buffer.len() > 0 {
-                    self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-                }
-            }
-        }
-        self.input_buffer = String::new();
-    }
-
     fn swap(&mut self) {
         if let Some(f) = self.stack.pop() {
-            self.push_buffer_to_stack();
+            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
             self.input_buffer = format!("{}", f);
         }
     }
