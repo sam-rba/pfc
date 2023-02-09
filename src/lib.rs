@@ -31,7 +31,7 @@ impl Calculator {
     }
 }
 
-pub enum Operator {
+enum Operator {
     Add,
     Sub,
     Mul,
@@ -40,7 +40,7 @@ pub enum Operator {
 }
 
 impl Operator {
-    pub fn parse(c: char) -> Result<Self, ParseOperatorError> {
+    fn parse(c: char) -> Result<Self, ParseOperatorError> {
         match c {
             '+' => Ok(Self::Add),
             '-' => Ok(Self::Sub),
@@ -52,7 +52,7 @@ impl Operator {
     }
 }
 
-pub struct ParseOperatorError(char);
+struct ParseOperatorError(char);
 
 enum Function {
     Sin,
