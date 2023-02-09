@@ -39,9 +39,7 @@ impl Calculator {
     }
 
     fn push_to_buffer(&mut self, c: char) {
-        if c.is_ascii_digit() {
-            self.input_buffer.push(c);
-        } else if c == '.' && !self.input_buffer.contains('.') {
+        if c == '.' && !self.input_buffer.contains('.') {
             if self.input_buffer.len() == 0 {
                 self.input_buffer.push('0');
             }
@@ -49,14 +47,25 @@ impl Calculator {
         } else if let Ok(op) = Operator::parse(c) {
             self.push_buffer_to_stack();
             self.perform_operation(op);
+        } else {
+            self.input_buffer.push(c);
         }
     }
 
     fn push_buffer_to_stack(&mut self) {
-        if self.input_buffer.len() > 0 {
-            self.stack.push(self.input_buffer.parse::<f64>().unwrap());
-            self.input_buffer = String::new();
+        match self.input_buffer.as_str() {
+            "sin" => {
+                if let Some(f) = self.stack.last_mut() {
+                    *f = f.sin();
+                }
+            }
+            _ => {
+                if self.input_buffer.len() > 0 {
+                    self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                }
+            }
         }
+        self.input_buffer = String::new();
     }
 
     fn swap(&mut self) {
