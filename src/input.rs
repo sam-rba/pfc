@@ -27,13 +27,13 @@ impl Calculator {
                 KeyCode::Backspace => {
                     self.input_buffer.pop();
                 }
-                KeyCode::Enter if self.input_buffer.len() > 0 => {
+                KeyCode::Enter => {
                     if let Ok(func) = Function::parse(&self.input_buffer) {
-                        if let Some(f) = self.stack.pop() {
-                            self.stack.push(func.call_on(f));
+                        if let Some(st) = self.stack.pop() {
+                            self.stack.push(func.call_on(st));
                         }
-                    } else {
-                        self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+                    } else if let Ok(bu) = self.input_buffer.parse::<f64>() {
+                        self.stack.push(bu);
                     }
                     self.input_buffer = String::new();
                 }
@@ -66,11 +66,11 @@ impl Calculator {
     // Swap the bottom of the stack and the input buffer. If the input buffer
     // is empty, this simply pops from the stack into the input buffer.
     fn swap(&mut self) {
-        if let Some(f) = self.stack.pop() {
-            if self.input_buffer.len() > 0 {
-                self.stack.push(self.input_buffer.parse::<f64>().unwrap());
+        if let Some(st) = self.stack.pop() {
+            if let Ok(bu) = self.input_buffer.parse::<f64>() {
+                self.stack.push(bu);
             }
-            self.input_buffer = format!("{}", f);
+            self.input_buffer = format!("{}", st);
         }
     }
 
