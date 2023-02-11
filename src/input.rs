@@ -12,17 +12,17 @@ impl Calculator {
                 _ => {}
             },
             KeyModifiers::SHIFT => match key.code {
-                KeyCode::Char('D') => self.clear(),
+                KeyCode::Char('Q') => {
+                    return Signal::Exit;
+                }
+                KeyCode::Char('J' | 'K') => self.swap(),
+                KeyCode::Char('D') => {
+                    self.input_buffer = String::new();
+                }
+                KeyCode::Char('C') => self.clear(),
                 _ => {}
             },
             KeyModifiers::NONE => match key.code {
-                KeyCode::Char('q') => {
-                    return Signal::Exit;
-                }
-                KeyCode::Char('j' | 'k') => self.swap(),
-                KeyCode::Char('d') => {
-                    self.input_buffer = String::new();
-                }
                 KeyCode::Char(c) => self.push_to_buffer(c),
                 KeyCode::Backspace => {
                     self.input_buffer.pop();

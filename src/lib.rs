@@ -55,26 +55,35 @@ impl Operator {
 struct ParseOperatorError(char);
 
 enum Function {
-    Sin,
-    Cos,
-    Tan,
+    DSin, // Sine (degrees)
+    DCos, // Cosine (degrees)
+    DTan, // Tangent (degrees)
+    RSin, // Sine (radians)
+    RCos, // Cosing (radians)
+    RTan, // Tangent (radians)
 }
 
 impl Function {
     fn parse(s: &str) -> Result<Self, ParseFunctionError> {
         match s {
-            "sin" => Ok(Self::Sin),
-            "cos" => Ok(Self::Cos),
-            "tan" => Ok(Self::Tan),
+            "dsin" => Ok(Self::DSin),
+            "dcos" => Ok(Self::DCos),
+            "dtan" => Ok(Self::DTan),
+            "rsin" => Ok(Self::RSin),
+            "rcos" => Ok(Self::RCos),
+            "rtan" => Ok(Self::RTan),
             _ => Err(ParseFunctionError(s.to_string())),
         }
     }
 
     fn call_on(&self, f: f64) -> f64 {
         match self {
-            Self::Sin => f.sin(),
-            Self::Cos => f.cos(),
-            Self::Tan => f.tan(),
+            Self::DSin => f.to_radians().sin(),
+            Self::DCos => f.to_radians().cos(),
+            Self::DTan => f.to_radians().tan(),
+            Self::RSin => f.sin(),
+            Self::RCos => f.cos(),
+            Self::RTan => f.tan(),
         }
     }
 }
