@@ -1,3 +1,5 @@
+use std::f64::consts::{E, PI};
+
 mod input;
 pub mod ui;
 
@@ -61,8 +63,8 @@ enum Function {
     RSin, // Sine (radians)
     RCos, // Cosing (radians)
     RTan, // Tangent (radians)
-    Deg,  // Convert from radians to degrees.
-    Rad,  // Convert from degrees to radians.
+    Deg,  // Convert from radians to degrees
+    Rad,  // Convert from degrees to radians
 }
 
 impl Function {
@@ -95,6 +97,30 @@ impl Function {
 }
 
 struct ParseFunctionError(String);
+
+enum Constant {
+    Pi, // Archimedes’ constant (π)
+    E,  // Euler's number (e)
+}
+
+impl Constant {
+    fn parse(s: &str) -> Result<Self, ParseConstantError> {
+        match s {
+            "pi" => Ok(Self::Pi),
+            "e" => Ok(Self::E),
+            _ => Err(ParseConstantError(s.to_string())),
+        }
+    }
+
+    fn value(&self) -> f64 {
+        match self {
+            Self::Pi => PI,
+            Self::E => E,
+        }
+    }
+}
+
+struct ParseConstantError(String);
 
 pub enum Signal {
     None,

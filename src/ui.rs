@@ -12,7 +12,7 @@ use tui::{
     Frame, Terminal,
 };
 
-use crate::{Calculator, Function};
+use crate::{Calculator, Constant, Function};
 
 const WIDTH: u16 = 32;
 
@@ -78,10 +78,7 @@ fn input_buffer_widget(input_buffer: &str) -> impl Widget {
         Span::raw(">"),
         Span::styled(
             format!(" {}", input_buffer),
-            match Function::parse(&input_buffer) {
-                Ok(_) => Style::default().add_modifier(Modifier::BOLD),
-                Err(_) => Style::default(),
-            },
+            input_buffer_style(input_buffer),
         ),
     ]))
     .block(Block::default().borders(Borders::ALL))
@@ -90,4 +87,14 @@ fn input_buffer_widget(input_buffer: &str) -> impl Widget {
 fn version_number_widget() -> impl Widget {
     Paragraph::new(format!("pfc-{}", option_env!("CARGO_PKG_VERSION").unwrap()))
         .alignment(Alignment::Center)
+}
+
+fn input_buffer_style(input_buffer: &str) -> Style {
+    if let Ok(_) = Function::parse(&input_buffer) {
+        Style::default().add_modifier(Modifier::BOLD)
+    } else if let Ok(_) = Constant::parse(&input_buffer) {
+        Style::default().add_modifier(Modifier::BOLD)
+    } else {
+        Style::default()
+    }
 }

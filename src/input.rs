@@ -1,6 +1,6 @@
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
-use crate::{Calculator, Function, Operator, Signal};
+use crate::{Calculator, Constant, Function, Operator, Signal};
 
 impl Calculator {
     pub fn handle_input(&mut self, key: KeyEvent) -> Signal {
@@ -32,6 +32,8 @@ impl Calculator {
                         if let Some(st) = self.stack.pop() {
                             self.stack.push(func.call_on(st));
                         }
+                    } else if let Ok(c) = Constant::parse(&self.input_buffer) {
+                        self.stack.push(c.value());
                     } else if let Ok(bu) = self.input_buffer.parse::<f64>() {
                         self.stack.push(bu);
                     }
