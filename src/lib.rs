@@ -61,6 +61,8 @@ enum Function {
     RSin, // Sine (radians)
     RCos, // Cosing (radians)
     RTan, // Tangent (radians)
+    Deg,  // Convert from radians to degrees.
+    Rad,  // Convert from degrees to radians.
 }
 
 impl Function {
@@ -72,6 +74,8 @@ impl Function {
             "rsin" => Ok(Self::RSin),
             "rcos" => Ok(Self::RCos),
             "rtan" => Ok(Self::RTan),
+            "deg" => Ok(Self::Deg),
+            "rad" => Ok(Self::Rad),
             _ => Err(ParseFunctionError(s.to_string())),
         }
     }
@@ -84,6 +88,8 @@ impl Function {
             Self::RSin => f.sin(),
             Self::RCos => f.cos(),
             Self::RTan => f.tan(),
+            Self::Deg => f.to_degrees(),
+            Self::Rad => f.to_radians(),
         }
     }
 }
