@@ -8,7 +8,7 @@ pfc is an interactive postfix, or reverse Polish notation, calculator.
 .SH USAGE
 .SS Keyboard commands
 .TP
-.B q
+.B Shift-q
 Quit.
 .TP
 .B [0..9]
@@ -23,19 +23,19 @@ Remove a digit from the input buffer.
 .B Enter
 Push the number in the input buffer to the stack.
 .TP
-.B j
+.B Shift-j
 Swap the bottom (most recently pushed) item on the stack with the input buffer.
 If the input buffer is empty this simply moves the most recently pushed item
 back into the input buffer.
 .TP
-.B k
+.B Shift-k
 The same as
 .BR j .
 .TP
-.B d
+.B Shift-d
 Delete the contents of the input buffer.
 .TP
-.B Shift-d
+.B Shift-c
 Delete the contents of the input buffer and the stack.
 .SS Operators
 .TP
@@ -72,3 +72,9 @@ Cosine function (radians).
 .TP
 .B rtan
 Tangent function (radians).
+.TP
+.B deg
+Convert radians to degrees.
+.TP
+.B rad
+Convert degrees to radians.
