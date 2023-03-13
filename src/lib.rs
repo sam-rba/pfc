@@ -1,4 +1,7 @@
-use std::f64::consts::{E, PI};
+use std::{
+    f64::consts::{E, PI},
+    fmt::{self, Display, Formatter},
+};
 
 mod input;
 pub mod ui;
@@ -7,6 +10,7 @@ pub mod ui;
 pub struct Calculator {
     stack: Vec<f64>,
     input_buffer: String,
+    angle_mode: AngleMode,
 }
 
 impl Calculator {
@@ -30,6 +34,66 @@ impl Calculator {
             Operator::Div => lhs / rhs,
             Operator::Exp => lhs.powf(rhs),
         });
+    }
+
+    fn call_function(&mut self, func: Function) {
+        let mut val = match self.stack.pop() {
+            Some(v) => v,
+            None => {
+                return;
+            }
+        };
+        self.stack.push(match func {
+            Function::Sin => {
+                if self.angle_mode == AngleMode::Degrees {
+                    val = val.to_radians();
+                }
+                val.sin()
+            }
+            Function::Cos => {
+                if self.angle_mode == AngleMode::Degrees {
+                    val = val.to_radians();
+                }
+                val.cos()
+            }
+            Function::Tan => {
+                if self.angle_mode == AngleMode::Degrees {
+                    val = val.to_radians();
+                }
+                val.tan()
+            }
+            Function::Deg => val.to_degrees(),
+            Function::Rad => val.to_radians(),
+        });
+    }
+}
+
+#[derive(Default, Copy, Clone, PartialEq)]
+enum AngleMode {
+    #[default]
+    Degrees,
+    Radians,
+}
+
+impl AngleMode {
+    fn toggle(&self) -> Self {
+        match self {
+            Self::Degrees => Self::Radians,
+            Self::Radians => Self::Degrees,
+        }
+    }
+}
+
+impl Display for AngleMode {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Degrees => "deg",
+                Self::Radians => "rad",
+            }
+        )
     }
 }
 
@@ -57,41 +121,22 @@ impl Operator {
 struct ParseOperatorError(char);
 
 enum Function {
-    DSin, // Sine (degrees)
-    DCos, // Cosine (degrees)
-    DTan, // Tangent (degrees)
-    RSin, // Sine (radians)
-    RCos, // Cosing (radians)
-    RTan, // Tangent (radians)
-    Deg,  // Convert from radians to degrees
-    Rad,  // Convert from degrees to radians
+    Sin, // Sine
+    Cos, // Cosine
+    Tan, // Tangent
+    Deg, // Convert from radians to degrees
+    Rad, // Convert from degrees to radians
 }
 
 impl Function {
     fn parse(s: &str) -> Result<Self, ParseFunctionError> {
         match s {
-            "dsin" => Ok(Self::DSin),
-            "dcos" => Ok(Self::DCos),
-            "dtan" => Ok(Self::DTan),
-            "rsin" => Ok(Self::RSin),
-            "rcos" => Ok(Self::RCos),
-            "rtan" => Ok(Self::RTan),
+            "sin" => Ok(Self::Sin),
+            "cos" => Ok(Self::Cos),
+            "tan" => Ok(Self::Tan),
             "deg" => Ok(Self::Deg),
             "rad" => Ok(Self::Rad),
             _ => Err(ParseFunctionError(s.to_string())),
-        }
-    }
-
-    fn call_on(&self, f: f64) -> f64 {
-        match self {
-            Self::DSin => f.to_radians().sin(),
-            Self::DCos => f.to_radians().cos(),
-            Self::DTan => f.to_radians().tan(),
-            Self::RSin => f.sin(),
-            Self::RCos => f.cos(),
-            Self::RTan => f.tan(),
-            Self::Deg => f.to_degrees(),
-            Self::Rad => f.to_radians(),
         }
     }
 }

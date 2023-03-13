@@ -20,6 +20,9 @@ impl Calculator {
                     self.input_buffer = String::new();
                 }
                 KeyCode::Char('C') => self.clear(),
+                KeyCode::Char('A') => {
+                    self.angle_mode = self.angle_mode.toggle();
+                }
                 _ => {}
             },
             KeyModifiers::NONE => match key.code {
@@ -29,9 +32,7 @@ impl Calculator {
                 }
                 KeyCode::Enter => {
                     if let Ok(func) = Function::parse(&self.input_buffer) {
-                        if let Some(st) = self.stack.pop() {
-                            self.stack.push(func.call_on(st));
-                        }
+                        self.call_function(func);
                     } else if let Ok(c) = Constant::parse(&self.input_buffer) {
                         self.stack.push(c.value());
                     } else if let Ok(bu) = self.input_buffer.parse::<f64>() {

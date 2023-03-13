@@ -12,7 +12,7 @@ use tui::{
     Frame, Terminal,
 };
 
-use crate::{Calculator, Constant, Function};
+use crate::{AngleMode, Calculator, Constant, Function};
 
 const WIDTH: u16 = 32;
 
@@ -20,8 +20,9 @@ impl Calculator {
     pub fn draw<B: Backend>(&self, f: &mut Frame<B>) {
         let chunks = layout(self.stack.len(), f.size());
         f.render_widget(version_number_widget(), chunks[0]);
-        f.render_widget(stack_widget(&self.stack), chunks[2]);
-        f.render_widget(input_buffer_widget(&self.input_buffer), chunks[3]);
+        f.render_widget(angle_mode_widget(self.angle_mode), chunks[2]);
+        f.render_widget(stack_widget(&self.stack), chunks[3]);
+        f.render_widget(input_buffer_widget(&self.input_buffer), chunks[4]);
     }
 }
 
@@ -53,14 +54,19 @@ fn layout(stack_size: usize, frame_size: Rect) -> Vec<Rect> {
         .direction(Direction::Vertical)
         .constraints(
             [
-                Constraint::Length(1),
-                Constraint::Max(u16::MAX),
-                Constraint::Length(stack_size as u16 + 2),
-                Constraint::Length(3),
+                Constraint::Length(1),                     // Version number
+                Constraint::Max(u16::MAX),                 // Fill
+                Constraint::Length(1),                     // Angle mode
+                Constraint::Length(stack_size as u16 + 2), // Stack
+                Constraint::Length(3),                     // Input buffer
             ]
             .as_ref(),
         )
         .split(columns[0])
+}
+
+fn angle_mode_widget(angle_mode: AngleMode) -> impl Widget {
+    Paragraph::new(format!("{}", angle_mode)).alignment(Alignment::Right)
 }
 
 fn stack_widget(stack: &Vec<f64>) -> impl Widget {
