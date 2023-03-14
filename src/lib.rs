@@ -3,8 +3,11 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
+mod function;
 mod input;
 pub mod ui;
+
+pub use function::Function;
 
 #[derive(Default)]
 pub struct Calculator {
@@ -35,41 +38,10 @@ impl Calculator {
             Operator::Exp => lhs.powf(rhs),
         });
     }
-
-    fn call_function(&mut self, func: Function) {
-        let mut val = match self.stack.pop() {
-            Some(v) => v,
-            None => {
-                return;
-            }
-        };
-        self.stack.push(match func {
-            Function::Sin => {
-                if self.angle_mode == AngleMode::Degrees {
-                    val = val.to_radians();
-                }
-                val.sin()
-            }
-            Function::Cos => {
-                if self.angle_mode == AngleMode::Degrees {
-                    val = val.to_radians();
-                }
-                val.cos()
-            }
-            Function::Tan => {
-                if self.angle_mode == AngleMode::Degrees {
-                    val = val.to_radians();
-                }
-                val.tan()
-            }
-            Function::Deg => val.to_degrees(),
-            Function::Rad => val.to_radians(),
-        });
-    }
 }
 
 #[derive(Default, Copy, Clone, PartialEq)]
-enum AngleMode {
+pub enum AngleMode {
     #[default]
     Degrees,
     Radians,
@@ -119,29 +91,6 @@ impl Operator {
 }
 
 struct ParseOperatorError(char);
-
-enum Function {
-    Sin, // Sine
-    Cos, // Cosine
-    Tan, // Tangent
-    Deg, // Convert from radians to degrees
-    Rad, // Convert from degrees to radians
-}
-
-impl Function {
-    fn parse(s: &str) -> Result<Self, ParseFunctionError> {
-        match s {
-            "sin" => Ok(Self::Sin),
-            "cos" => Ok(Self::Cos),
-            "tan" => Ok(Self::Tan),
-            "deg" => Ok(Self::Deg),
-            "rad" => Ok(Self::Rad),
-            _ => Err(ParseFunctionError(s.to_string())),
-        }
-    }
-}
-
-struct ParseFunctionError(String);
 
 enum Constant {
     Pi, // Archimedes’ constant (π)

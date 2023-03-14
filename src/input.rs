@@ -32,7 +32,9 @@ impl Calculator {
                 }
                 KeyCode::Enter => {
                     if let Ok(func) = Function::parse(&self.input_buffer) {
-                        self.call_function(func);
+                        if let Some(val) = self.stack.pop() {
+                            self.stack.push(func.call(val, self.angle_mode));
+                        }
                     } else if let Ok(c) = Constant::parse(&self.input_buffer) {
                         self.stack.push(c.value());
                     } else if let Ok(bu) = self.input_buffer.parse::<f64>() {
