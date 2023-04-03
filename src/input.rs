@@ -23,6 +23,15 @@ impl Calculator {
                 KeyCode::Char('A') => {
                     self.angle_mode = self.angle_mode.toggle();
                 }
+                KeyCode::Char('N') => {
+                    if self.input_buffer.len() > 0 {
+                        if let Ok(f) = self.input_buffer.parse::<f64>() {
+                            self.input_buffer = format!("{}", -f);
+                        }
+                    } else if let Some(v) = self.stack.pop() {
+                        self.stack.push(-v);
+                    }
+                }
                 _ => {}
             },
             KeyModifiers::NONE => match key.code {
