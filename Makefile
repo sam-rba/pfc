@@ -6,6 +6,9 @@ build:
 	go test
 	gofmt -l -s -w .
 
+run: build
+	./pfc
+
 clean:
 	rm -f pfc
 
@@ -21,4 +24,4 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/pfc \
 		${DESTDIR}${MANPREFIX}/man1/pfc.1
 
-.PHONY: build install uninstall
+.PHONY: build run install uninstall
