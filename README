@@ -6,11 +6,7 @@ terminal.
 
 Requirements
 ------------
-Cargo, the Rust package manager, is required to build pfc.
-It can be installed from most Linux package managers or like so:
-
-	curl https://sh.rustup.rs -sSf | sh
-
+Go is required to build pfc.
 
 Installation
 ------------

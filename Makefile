@@ -1,29 +1,21 @@
 include config.mk
 
 build:
-	cargo fmt --all
-	cargo test
-	cargo build
-
-run: build
-	target/debug/pfc
-
-doc:
-	cargo doc --open
+	go mod tidy
+	gofmt -l -s -w ./**/*.go
 
 clean:
-	rm -r target
+	rm -f pfc
 
-install:
-	cargo build --release
-	cp target/release/pfc ${DESTDIR}${PREFIX}/bin
+install: build
+	cp pfc ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/pfc
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < pfc.1 > ${DESTDIR}${MANPREFIX}/man1/pfc.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/pfc.1
 
 uninstall:
-	rm -f ${DESTDIR}${PREFIX}/bin/pfc\
+	rm -f ${DESTDIR}${PREFIX}/bin/pfc \
 		${DESTDIR}${MANPREFIX}/man1/pfc.1
 
-.PHONY: build run doc clean install uninstall
+.PHONY: build install uninstall
