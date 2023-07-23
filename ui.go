@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/charmbracelet/bubbletea"
 )
@@ -40,6 +41,15 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if len(ui.calc.buffer) > 0 {
 				ui.calc.buffer = ui.calc.buffer[:len(ui.calc.buffer)-1]
 			}
+		case "enter":
+			if fn := parseFunction(ui.calc.buffer); fn != nil {
+				fn(ui.calc.stack)
+			} else if con := parseConstant(ui.calc.buffer); con != nil {
+				ui.calc.stack = append(ui.calc.stack, *con)
+			} else if f, err := strconv.ParseFloat(ui.calc.buffer, 64); err != nil {
+				ui.calc.stack = append(ui.calc.stack, f)
+			}
+			ui.calc.buffer = ""
 		default:
 			ui.calc.buffer += msg.String()
 		}
@@ -50,7 +60,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (ui UI) View() string {
 	var s string
 	for _, f := range ui.calc.stack {
-		s += fmt.Sprintf("%.*g\n", sigDigs, f)
+		s += fmt.Sprintf(" %.*g\n", sigDigs, f)
 	}
 	s += boxTop(ui.windowWidth) + "\n"
 	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buffer)

@@ -7,14 +7,12 @@ import (
 	"github.com/charmbracelet/bubbletea"
 )
 
-// Types
-
 type Calculator struct {
-	stack  []float64
+	stack  Stack
 	buffer string
 }
 
-// Function Definitions
+type Stack []float64
 
 func main() {
 	if _, err := tea.NewProgram(new(UI)).Run(); err != nil {
