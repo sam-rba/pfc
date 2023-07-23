@@ -2,12 +2,15 @@ include config.mk
 
 build:
 	go mod tidy
-	gofmt -l -s -w ./**/*.go
+	go build
+	go test
+	gofmt -l -s -w .
 
 clean:
 	rm -f pfc
 
-install: build
+install:
+	go build
 	cp pfc ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/pfc
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
