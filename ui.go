@@ -46,7 +46,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				fn(ui.calc.stack)
 			} else if con := parseConstant(ui.calc.buffer); con != nil {
 				ui.calc.stack = append(ui.calc.stack, *con)
-			} else if f, err := strconv.ParseFloat(ui.calc.buffer, 64); err != nil {
+			} else if f, err := strconv.ParseFloat(ui.calc.buffer, 64); err == nil {
 				ui.calc.stack = append(ui.calc.stack, f)
 			}
 			ui.calc.buffer = ""
