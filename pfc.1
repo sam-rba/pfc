@@ -5,89 +5,124 @@ pfc \- postfix calculator
 .B pfc
 .SH DESCRIPTION
 pfc is an interactive postfix, or reverse Polish notation, calculator.
+.
 .SH USAGE
+.
 .SS Keyboard commands
+.
 .TP
 .B Shift-q
 Quit.
+.
 .TP
 .B [0..9]
 Enter a digit into the input buffer.
 pfc works with floating point numbers so the
 .B .
 character is OK as well.
+.
 .TP
 .B Backspace
 Remove a digit from the input buffer.
+.
 .TP
 .B Enter
 Push the number in the input buffer to the stack.
+.
 .TP
 .B Shift-j
 Swap the bottom (most recently pushed) item on the stack with the input buffer.
 If the input buffer is empty this simply moves the most recently pushed item
 back into the input buffer.
+.
 .TP
 .B Shift-k
 The same as
 .BR Shift-j .
+.
 .TP
 .B Shift-d
 Delete the contents of the input buffer.
+.
 .TP
 .B Shift-c
 Delete the contents of the input buffer and the stack.
+.
 .TP
 .B Shift-a
 Toggle between degree and radian mode.
+.
 .TP
 .B Shift-n
-Negation. If there is a number in the buffer, negate it. Otherwise, negate the bottom number in the stack.
+Negation. If there is a number in the buffer, negate it. Otherwise, negate the
+bottom number in the stack.
+.
 .SS Operators
+.
 .TP
 .B +
 Addition.
+.
 .TP
 .B -
 Subtraction.
+.
 .TP
 .B *
 Multiplication.
+.
 .TP
 .B /
 Division.
+.
+.TP
+.B %
+Modulo/remainder.
+.
 .TP
 .B ^
 Exponentiation.
+.
 .SS Functions
+.
 .TP
 .B sin
 Sine function.
+.
 .TP
 .B cos
 Cosine function.
+.
 .TP
 .B tan
 Tangent function.
+.
 .TP
 .B asin
 Inverse sine function.
+.
 .TP
 .B acos
 Inverse cosine function.
+.
 .TP
 .B atan
 Inverse tangent function.
+.
 .TP
 .B deg
 Convert radians to degrees.
+.
 .TP
 .B rad
 Convert degrees to radians.
+.
 .SS Constants
+.
 .TP
 .B pi
 Archimedes’ constant (π).
+.
 .TP
 .B e
 Euler’s number (e).
