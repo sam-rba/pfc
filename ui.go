@@ -37,8 +37,10 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "Q":
 			return ui, tea.Quit
-		case "+":
-			ui.calc.add()
+		case "+", "-", "*", "/", "%":
+			if err := ui.calc.performOp(msg.String()[0]); err != nil {
+				panic(err)
+			}
 		case "backspace":
 			if len(ui.calc.buf) > 0 {
 				ui.calc.buf = ui.calc.buf[:len(ui.calc.buf)-1]
