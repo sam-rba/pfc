@@ -40,20 +40,20 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "+":
 			ui.calc.add()
 		case "backspace":
-			if len(ui.calc.buffer) > 0 {
-				ui.calc.buffer = ui.calc.buffer[:len(ui.calc.buffer)-1]
+			if len(ui.calc.buf) > 0 {
+				ui.calc.buf = ui.calc.buf[:len(ui.calc.buf)-1]
 			}
 		case "enter":
-			if fn := parseFunction(ui.calc.buffer); fn != nil {
+			if fn := parseFunction(ui.calc.buf); fn != nil {
 				fn(ui.calc.stack)
-			} else if con := parseConstant(ui.calc.buffer); con != nil {
+			} else if con := parseConstant(ui.calc.buf); con != nil {
 				ui.calc.stack = append(ui.calc.stack, *con)
-			} else if f, err := strconv.ParseFloat(ui.calc.buffer, 64); err == nil {
+			} else if f, err := strconv.ParseFloat(ui.calc.buf, 64); err == nil {
 				ui.calc.stack = append(ui.calc.stack, f)
 			}
-			ui.calc.buffer = ""
+			ui.calc.buf = ""
 		default:
-			ui.calc.buffer += msg.String()
+			ui.calc.buf += msg.String()
 		}
 	}
 	return ui, nil
@@ -65,7 +65,7 @@ func (ui UI) View() string {
 		s += fmt.Sprintf(" %.*g\n", sigDigs, f)
 	}
 	s += boxTop(ui.windowWidth) + "\n"
-	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buffer)
+	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buf)
 	s += boxBottom(ui.windowWidth)
 	return s
 }
