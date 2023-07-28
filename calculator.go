@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -58,6 +59,8 @@ func parseOp(op byte) (func(lhs *float64, rhs float64), error) {
 				*lhs = float64(int64(*lhs) % int64(rhs))
 			}
 		}, nil
+	case '^':
+		return func(lhs *float64, rhs float64) { *lhs = math.Pow(*lhs, rhs) }, nil
 	}
 	return nil, OpError{op}
 }

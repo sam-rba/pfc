@@ -37,7 +37,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "Q":
 			return ui, tea.Quit
-		case "+", "-", "*", "/", "%":
+		case "+", "-", "*", "/", "%", "^":
 			if err := ui.calc.performOp(msg.String()[0]); err != nil {
 				panic(err)
 			}
