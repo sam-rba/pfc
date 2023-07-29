@@ -12,6 +12,13 @@ const (
 	modeRad = true
 )
 
+func (a AngleMode) String() string {
+	if a == modeDeg {
+		return "deg"
+	}
+	return "rad"
+}
+
 type Calculator struct {
 	stack  Stack
 	buf    string

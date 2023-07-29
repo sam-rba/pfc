@@ -18,11 +18,12 @@ const (
 )
 
 // sigDigs is the number of significant digits when printing a number.
-const sigDigs = 64
+const sigDigs = 17
 
 type UI struct {
-	calc        Calculator
-	windowWidth int // Width of the window measured in characters.
+	calc   Calculator
+	width  int // Width of the window measured in characters.
+	height int
 }
 
 func (ui UI) Init() tea.Cmd {
@@ -32,7 +33,8 @@ func (ui UI) Init() tea.Cmd {
 func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		ui.windowWidth = msg.Width
+		ui.width = msg.Width
+		ui.height = msg.Height
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "Q":
@@ -73,14 +75,43 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (ui UI) View() string {
-	var s string
+	s := padding(ui)
+
+	// Angle mode.
+	s += fmt.Sprintf("%*s\n", ui.width-1, ui.calc.anglem)
+
+	// Stack.
+	top := boxTop(ui.width)
+	bottom := boxBottom(ui.width)
+	s += top + "\n"
 	for _, f := range ui.calc.stack {
-		s += printNum(f) + "\n"
+		s += fmt.Sprintf("%[1]c%*s%[1]c\n", boxVertical, ui.width-2, printNum(f))
 	}
-	s += boxTop(ui.windowWidth) + "\n"
-	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buf)
-	s += boxBottom(ui.windowWidth)
+	s += bottom + "\n"
+
+	// Buffer.
+	s += boxTop(ui.width) + "\n"
+	s += fmt.Sprintf("%[1]c%*s%[1]c\n", boxVertical, ui.width-2, ui.calc.buf)
+	s += boxBottom(ui.width)
 	return s
+}
+
+func padding(ui UI) string {
+	// Number of lines occupied by each ui element.
+	var (
+		anglem = 1
+		stack  = len(ui.calc.stack) + 2
+		buf    = 3
+	)
+	lines := ui.height - anglem - stack - buf
+	if lines < 1 {
+		return ""
+	}
+	s := make([]byte, lines)
+	for i := 0; i < lines; i++ {
+		s[i] = '\n'
+	}
+	return string(s)
 }
 
 func printNum(v float64) string {
