@@ -12,6 +12,10 @@ func parseFunction(fn string) func(Calculator) {
 		return trig(fn)
 	case "asin", "acos", "atan":
 		return invTrig(fn)
+	case "deg":
+		return deg
+	case "rad":
+		return rad
 	}
 	return nil
 }
@@ -62,6 +66,18 @@ func invTrig(fn string) func(Calculator) {
 		if c.anglem == modeDeg {
 			*v = degrees(*v)
 		}
+	}
+}
+
+func deg(c Calculator) {
+	if len(c.stack) > 0 {
+		c.stack[len(c.stack)-1] = degrees(c.stack[len(c.stack)-1])
+	}
+}
+
+func rad(c Calculator) {
+	if len(c.stack) > 0 {
+		c.stack[len(c.stack)-1] = radians(c.stack[len(c.stack)-1])
 	}
 }
 
