@@ -56,8 +56,7 @@ func (c *Calculator) performOp(op byte) error {
 	} else if fl, err := strconv.ParseFloat(c.buf, 64); err == nil {
 		fn(&c.stack[len(c.stack)-1], fl)
 	} else if len(c.stack) > 1 {
-		fn(&c.stack[len(c.stack)-2], c.stack[len(c.stack)-1])
-		c.stack = c.stack[:len(c.stack)-1]
+		fn(&c.stack[len(c.stack)-2], *c.stack.pop())
 	}
 	c.buf = ""
 	return nil

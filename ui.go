@@ -58,9 +58,9 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if fn := parseFunction(ui.calc.buf); fn != nil {
 				fn(ui.calc.stack)
 			} else if con := parseConstant(ui.calc.buf); con != nil {
-				ui.calc.stack = append(ui.calc.stack, *con)
+				ui.calc.stack.push(*con)
 			} else if f, err := strconv.ParseFloat(ui.calc.buf, 64); err == nil {
-				ui.calc.stack = append(ui.calc.stack, f)
+				ui.calc.stack.push(f)
 			}
 			ui.calc.buf = ""
 		default:
