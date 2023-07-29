@@ -44,6 +44,8 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "C":
 			ui.calc.buf = ""
 			ui.calc.stack = ui.calc.stack[:0]
+		case "N":
+			ui.calc.negate()
 		case "+", "-", "*", "/", "%", "^":
 			if err := ui.calc.performOp(msg.String()[0]); err != nil {
 				panic(err)
@@ -71,7 +73,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (ui UI) View() string {
 	var s string
 	for _, f := range ui.calc.stack {
-		s += printStackVal(f) + "\n"
+		s += printNum(f) + "\n"
 	}
 	s += boxTop(ui.windowWidth) + "\n"
 	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buf)
@@ -79,7 +81,7 @@ func (ui UI) View() string {
 	return s
 }
 
-func printStackVal(v float64) string {
+func printNum(v float64) string {
 	return fmt.Sprintf(" %.*g", sigDigs, v)
 }
 

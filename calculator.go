@@ -38,9 +38,21 @@ func (c *Calculator) swap() {
 		c.stack.push(f)
 	}
 	if st != nil {
-		c.buf = strings.TrimSpace(printStackVal(*st))
+		c.buf = strings.TrimSpace(printNum(*st))
 	} else {
 		c.buf = ""
+	}
+}
+
+// negate negates the number in the buffer, if any; or the bottom number on the
+// stack, if any.
+func (c *Calculator) negate() {
+	if con := parseConstant(c.buf); con != nil {
+		c.buf = strings.TrimSpace(printNum(-*con))
+	} else if f, err := strconv.ParseFloat(c.buf, 64); err == nil {
+		c.buf = strings.TrimSpace(printNum(-f))
+	} else if len(c.buf) == 0 && len(c.stack) > 0 {
+		c.stack[len(c.stack)-1] = -c.stack[len(c.stack)-1]
 	}
 }
 
