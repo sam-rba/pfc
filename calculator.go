@@ -4,13 +4,44 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 )
 
 type Stack []float64
 
+func (s *Stack) push(v float64) {
+	*s = append(*s, v)
+}
+
+func (s *Stack) pop() *float64 {
+	if len(*s) > 0 {
+		v := (*s)[len(*s)-1]
+		*s = (*s)[:len(*s)-1]
+		return &v
+	}
+	return nil
+}
+
 type Calculator struct {
 	stack Stack
 	buf   string
+}
+
+// swap swaps the values of the buffer and the bottom element of the stack. If
+// the buffer is empty this simply pops from the stack. If the stack is empty,
+// this simply pushes to the stack.
+func (c *Calculator) swap() {
+	st := c.stack.pop()
+	if con := parseConstant(c.buf); con != nil {
+		c.stack.push(*con)
+	} else if f, err := strconv.ParseFloat(c.buf, 64); err == nil {
+		c.stack.push(f)
+	}
+	if st != nil {
+		c.buf = strings.TrimSpace(printStackVal(*st))
+	} else {
+		c.buf = ""
+	}
 }
 
 // performOp performs the specified arithmetic operation and returns nil or

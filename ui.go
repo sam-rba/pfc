@@ -37,6 +37,8 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "Q":
 			return ui, tea.Quit
+		case "J", "K":
+			ui.calc.swap()
 		case "+", "-", "*", "/", "%", "^":
 			if err := ui.calc.performOp(msg.String()[0]); err != nil {
 				panic(err)
@@ -64,12 +66,16 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (ui UI) View() string {
 	var s string
 	for _, f := range ui.calc.stack {
-		s += fmt.Sprintf(" %.*g\n", sigDigs, f)
+		s += printStackVal(f) + "\n"
 	}
 	s += boxTop(ui.windowWidth) + "\n"
 	s += fmt.Sprintf("%[1]c%-*s%[1]c\n", boxVertical, ui.windowWidth-2, ui.calc.buf)
 	s += boxBottom(ui.windowWidth)
 	return s
+}
+
+func printStackVal(v float64) string {
+	return fmt.Sprintf(" %.*g", sigDigs, v)
 }
 
 // boxTop returns the top of a UTF-8 box, 'width' characters wide (including
