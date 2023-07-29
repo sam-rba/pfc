@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-type AngleMode int
+type AngleMode bool
 
 const (
-	modeDeg = iota
-	modeRad
+	modeDeg = false
+	modeRad = true
 )
 
 type Calculator struct {

@@ -44,6 +44,8 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "C":
 			ui.calc.buf = ""
 			ui.calc.stack = ui.calc.stack[:0]
+		case "A":
+			ui.calc.anglem = !ui.calc.anglem
 		case "N":
 			ui.calc.negate()
 		case "+", "-", "*", "/", "%", "^":
