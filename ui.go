@@ -103,12 +103,12 @@ func padding(ui UI) string {
 		stack  = len(ui.calc.stack) + 2
 		buf    = 3
 	)
-	lines := ui.height - anglem - stack - buf
-	if lines < 1 {
+	padlines := ui.height - anglem - stack - buf
+	if padlines < 1 {
 		return ""
 	}
-	s := make([]byte, lines)
-	for i := 0; i < lines; i++ {
+	s := make([]byte, padlines)
+	for i := 0; i < padlines; i++ {
 		s[i] = '\n'
 	}
 	return string(s)
