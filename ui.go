@@ -97,8 +97,7 @@ func (ui UI) View() string {
 }
 
 func padding(ui UI) string {
-	// Number of lines occupied by each ui element.
-	var (
+	var ( // Number of lines occupied by each ui element.
 		anglem = 1
 		stack  = len(ui.calc.stack) + 2
 		buf    = 3
