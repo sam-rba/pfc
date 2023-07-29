@@ -10,6 +10,8 @@ func parseFunction(fn string) func(Calculator) {
 	switch fn {
 	case "sin", "cos", "tan":
 		return trig(fn)
+	case "asin", "acos", "atan":
+		return invTrig(fn)
 	}
 	return nil
 }
@@ -35,6 +37,30 @@ func trig(fn string) func(Calculator) {
 			*v = math.Tan(*v)
 		default:
 			panic(fmt.Sprintf("invalid trig function: '%s'", fn))
+		}
+	}
+}
+
+// invTrig returns a closure that performs the inverse trig function specified
+// by fn. Panics if fn is not one of "asin", "acos" or "atan".
+func invTrig(fn string) func(Calculator) {
+	return func(c Calculator) {
+		if len(c.stack) <= 0 {
+			return
+		}
+		v := &c.stack[len(c.stack)-1]
+		switch fn {
+		case "asin":
+			*v = math.Asin(*v)
+		case "acos":
+			*v = math.Acos(*v)
+		case "atan":
+			*v = math.Atan(*v)
+		default:
+			panic(fmt.Sprintf("invalid inverse trig function: '%s'", fn))
+		}
+		if c.anglem == modeDeg {
+			*v = degrees(*v)
 		}
 	}
 }
