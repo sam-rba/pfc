@@ -9,6 +9,9 @@ func parseConstant(s string) *float64 {
 		// Assign to variable because can't take address of constant.
 		var pi float64 = math.Pi
 		return &pi
+	case "e":
+		var e float64 = math.E
+		return &e
 	}
 	return nil
 }
