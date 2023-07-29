@@ -5,9 +5,17 @@ import (
 	"strings"
 )
 
+type AngleMode int
+
+const (
+	modeDeg = iota
+	modeRad
+)
+
 type Calculator struct {
-	stack Stack
-	buf   string
+	stack  Stack
+	buf    string
+	anglem AngleMode
 }
 
 // swap swaps the values of the buffer and the bottom element of the stack. If

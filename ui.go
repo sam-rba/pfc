@@ -56,7 +56,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			if fn := parseFunction(ui.calc.buf); fn != nil {
-				fn(ui.calc.stack)
+				fn(ui.calc)
 			} else if con := parseConstant(ui.calc.buf); con != nil {
 				ui.calc.stack.push(*con)
 			} else if f, err := strconv.ParseFloat(ui.calc.buf, 64); err == nil {
