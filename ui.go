@@ -39,6 +39,11 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return ui, tea.Quit
 		case "J", "K":
 			ui.calc.swap()
+		case "D":
+			ui.calc.buf = ""
+		case "C":
+			ui.calc.buf = ""
+			ui.calc.stack = ui.calc.stack[:0]
 		case "+", "-", "*", "/", "%", "^":
 			if err := ui.calc.performOp(msg.String()[0]); err != nil {
 				panic(err)
