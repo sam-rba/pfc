@@ -1,9 +1,6 @@
 package main
 
-import (
-	"strconv"
-	"strings"
-)
+import "strconv"
 
 type AngleMode bool
 
@@ -36,7 +33,7 @@ func (c *Calculator) swap() {
 		c.stack.push(f)
 	}
 	if st != nil {
-		c.buf = strings.TrimSpace(printNum(*st))
+		c.buf = printNum(*st)
 	} else {
 		c.buf = ""
 	}
@@ -46,9 +43,9 @@ func (c *Calculator) swap() {
 // stack, if any.
 func (c *Calculator) negate() {
 	if con := parseConstant(c.buf); con != nil {
-		c.buf = strings.TrimSpace(printNum(-*con))
+		c.buf = printNum(-*con)
 	} else if f, err := strconv.ParseFloat(c.buf, 64); err == nil {
-		c.buf = strings.TrimSpace(printNum(-f))
+		c.buf = printNum(-f)
 	} else if len(c.buf) == 0 && len(c.stack) > 0 {
 		c.stack[len(c.stack)-1] = -c.stack[len(c.stack)-1]
 	}

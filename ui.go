@@ -20,6 +20,9 @@ const (
 // sigDigs is the number of significant digits when printing a number.
 const sigDigs = 17
 
+// maxWidth is the maximum width that the window will grow to.
+const maxWidth = 32
+
 type UI struct {
 	calc   Calculator
 	width  int // Width of the window measured in characters.
@@ -77,22 +80,24 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (ui UI) View() string {
 	s := padding(ui)
 
+	width := min(ui.width, maxWidth)
+
 	// Angle mode.
-	s += fmt.Sprintf("%*s\n", ui.width-1, ui.calc.anglem)
+	s += fmt.Sprintf("%*s\n", width-1, ui.calc.anglem)
 
 	// Stack.
-	top := boxTop(ui.width)
-	bottom := boxBottom(ui.width)
+	top := boxTop(width)
+	bottom := boxBottom(width)
 	s += top + "\n"
 	for _, f := range ui.calc.stack {
-		s += fmt.Sprintf("%[1]c%*s%[1]c\n", boxVertical, ui.width-2, printNum(f))
+		s += fmt.Sprintf("%[1]c%[2]*.[2]*s%[1]c\n", boxVertical, width-2, printNum(f))
 	}
 	s += bottom + "\n"
 
 	// Buffer.
-	s += boxTop(ui.width) + "\n"
-	s += fmt.Sprintf("%[1]c%*s%[1]c\n", boxVertical, ui.width-2, ui.calc.buf)
-	s += boxBottom(ui.width)
+	s += top + "\n"
+	s += fmt.Sprintf("%[1]c>%[2]*.[2]*s%[1]c\n", boxVertical, width-3, ui.calc.buf)
+	s += bottom
 	return s
 }
 
@@ -114,7 +119,7 @@ func padding(ui UI) string {
 }
 
 func printNum(v float64) string {
-	return fmt.Sprintf(" %.*g", sigDigs, v)
+	return fmt.Sprintf("%.*g", sigDigs, v)
 }
 
 // boxTop returns the top of a UTF-8 box, 'width' characters wide (including
@@ -152,4 +157,12 @@ func fill(s []rune, c rune) {
 	for i := range s {
 		s[i] = c
 	}
+}
+
+// min returns the lesser of x or y.
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
 }
