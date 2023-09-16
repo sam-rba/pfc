@@ -16,6 +16,8 @@ func parseFunction(fn string) func(Calculator) {
 		return deg
 	case "rad":
 		return rad
+	case "fac":
+		return fac
 	}
 	return nil
 }
@@ -69,15 +71,33 @@ func invTrig(fn string) func(Calculator) {
 	}
 }
 
+// Convert radians to degrees.
 func deg(c Calculator) {
 	if len(c.stack) > 0 {
 		c.stack[len(c.stack)-1] = degrees(c.stack[len(c.stack)-1])
 	}
 }
 
+// Convert degrees to radians.
 func rad(c Calculator) {
 	if len(c.stack) > 0 {
 		c.stack[len(c.stack)-1] = radians(c.stack[len(c.stack)-1])
+	}
+}
+
+// Factorial (!).
+func fac(c Calculator) {
+	if len(c.stack) > 0 {
+		a := &c.stack[len(c.stack)-1] // will replace with a!
+		if float64(int(*a)) != *a {   // undefined on non-ints
+			return
+		} else if int(*a) == 0 { // 0! = 1
+			*a = 1.0
+		} else { // a! = a*(a-1)!
+			for i := int(*a) - 1; i > 1; i-- {
+				*a *= float64(i)
+			}
+		}
 	}
 }
 
