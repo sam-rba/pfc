@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/charmbracelet/bubbletea"
 )
@@ -54,7 +53,8 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "N":
 			ui.calc.negate()
 		case "+", "-", "*", "/", "%", "^":
-			if err := ui.calc.performOp(msg.String()[0]); err != nil {
+			operator := msg.String()[0]
+			if err := ui.calc.performOperation(operator); err != nil {
 				panic(err)
 			}
 		case "backspace":
@@ -64,10 +64,8 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			if fn := parseFunction(ui.calc.buf); fn != nil {
 				fn(ui.calc)
-			} else if con := parseConstant(ui.calc.buf); con != nil {
-				ui.calc.stack.push(*con)
-			} else if f, err := strconv.ParseFloat(ui.calc.buf, 64); err == nil {
-				ui.calc.stack.push(f)
+			} else if v, err := ui.calc.parseBuffer(); err == nil {
+				ui.calc.stack.push(v)
 			}
 			ui.calc.buf = ""
 		default:
