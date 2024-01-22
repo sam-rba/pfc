@@ -49,7 +49,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			ui.calc.buf = ""
 			ui.calc.stack = ui.calc.stack[:0]
 		case "A":
-			ui.calc.anglem = !ui.calc.anglem
+			ui.calc.angleMode = !ui.calc.angleMode
 		case "N":
 			ui.calc.negate()
 		case "+", "-", "*", "/", "%", "^":
@@ -81,7 +81,7 @@ func (ui UI) View() string {
 	width := min(ui.width, maxWidth)
 
 	// Angle mode.
-	s += fmt.Sprintf("%*s\n", width-1, ui.calc.anglem)
+	s += fmt.Sprintf("%*s\n", width-1, ui.calc.angleMode)
 
 	// Stack.
 	top := boxTop(width)
@@ -101,11 +101,11 @@ func (ui UI) View() string {
 
 func padding(ui UI) string {
 	var ( // Number of lines occupied by each ui element.
-		anglem = 1
-		stack  = len(ui.calc.stack) + 2
-		buf    = 3
+		angleMode = 1
+		stack     = len(ui.calc.stack) + 2
+		buf       = 3
 	)
-	padlines := ui.height - anglem - stack - buf
+	padlines := ui.height - angleMode - stack - buf
 	if padlines < 1 {
 		return ""
 	}

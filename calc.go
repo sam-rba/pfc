@@ -5,21 +5,21 @@ import "strconv"
 type AngleMode bool
 
 const (
-	modeDeg = false
-	modeRad = true
+	degrees AngleMode = false
+	radians AngleMode = true
 )
 
 func (a AngleMode) String() string {
-	if a == modeDeg {
+	if a == degrees {
 		return "deg"
 	}
 	return "rad"
 }
 
 type Calculator struct {
-	stack  Stack
-	buf    string
-	anglem AngleMode
+	stack     Stack
+	buf       string
+	angleMode AngleMode
 }
 
 // swap swaps the values of the buffer and the bottom element of the stack. If

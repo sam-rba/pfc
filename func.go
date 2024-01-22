@@ -31,8 +31,8 @@ func trig(fn string) func(Calculator) {
 		}
 		v := &c.stack[len(c.stack)-1]
 		// The math package expects arguments to trig functions to be in radians.
-		if c.anglem == modeDeg {
-			*v = radians(*v)
+		if c.angleMode == degrees {
+			*v = degToRad(*v)
 		}
 		switch fn {
 		case "sin":
@@ -65,8 +65,8 @@ func invTrig(fn string) func(Calculator) {
 		default:
 			panic(fmt.Sprintf("invalid inverse trig function: '%s'", fn))
 		}
-		if c.anglem == modeDeg {
-			*v = degrees(*v)
+		if c.angleMode == degrees {
+			*v = radToDeg(*v)
 		}
 	}
 }
@@ -74,14 +74,14 @@ func invTrig(fn string) func(Calculator) {
 // Convert radians to degrees.
 func deg(c Calculator) {
 	if n, err := c.stack.pop(); err == nil {
-		c.stack.push(degrees(n))
+		c.stack.push(radToDeg(n))
 	}
 }
 
 // Convert degrees to radians.
 func rad(c Calculator) {
 	if n, err := c.stack.pop(); err == nil {
-		c.stack.push(radians(n))
+		c.stack.push(degToRad(n))
 	}
 }
 
@@ -98,13 +98,11 @@ func fac(c Calculator) {
 	c.stack.push(float64(factorial(uint(n))))
 }
 
-// radians converts degrees to radians.
-func radians(deg float64) float64 {
+func degToRad(deg float64) (rad float64) {
 	return deg * math.Pi / 180.0
 }
 
-// degrees converts radians to degrees.
-func degrees(rad float64) float64 {
+func radToDeg(rad float64) (deg float64) {
 	return rad * 180 / math.Pi
 }
 
