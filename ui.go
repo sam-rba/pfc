@@ -156,11 +156,3 @@ func fill(s []rune, c rune) {
 		s[i] = c
 	}
 }
-
-// min returns the lesser of x or y.
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}

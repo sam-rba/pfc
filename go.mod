@@ -1,6 +1,6 @@
 module git.samanthony.xyz/pfc
 
-go 1.20
+go 1.21
 
 require github.com/charmbracelet/bubbletea v0.24.2
 
