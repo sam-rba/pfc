@@ -18,6 +18,8 @@ func parseFunction(fn string) func(*Calculator) {
 		return rad
 	case "fac":
 		return fac
+	case "ch": // choose
+		return combination
 	}
 	return nil
 }
@@ -96,6 +98,36 @@ func fac(c *Calculator) {
 		return
 	}
 	c.stack.push(float64(factorial(uint(n))))
+}
+
+// Combination function. "n choose k" with integers n and k such that n >= k >= 0.
+func combination(c *Calculator) {
+	k, err := c.stack.pop()
+	if err != nil {
+		return
+	}
+	if !isUint(k) { // undefined on non-ints
+		c.stack.push(k)
+		return
+	}
+
+	n, err := c.stack.pop()
+	if err != nil {
+		c.stack.push(k)
+		return
+	}
+	if !isUint(n) { // undefined on non-ints
+		c.stack.push(n)
+		return
+	}
+
+	if k > n || n < 0 || k < 0 {
+		c.stack.push(n)
+		c.stack.push(k)
+	} else {
+		n, k := uint(n), uint(k)
+		c.stack.push(float64(factorial(n) / (factorial(k) * factorial(n-k))))
+	}
 }
 
 func degToRad(deg float64) (rad float64) {
