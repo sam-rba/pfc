@@ -63,7 +63,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "enter":
 			if fn := parseFunction(ui.calc.buf); fn != nil {
-				fn(ui.calc)
+				fn(&ui.calc)
 			} else if v, err := ui.calc.parseBuffer(); err == nil {
 				ui.calc.stack.push(v)
 			}

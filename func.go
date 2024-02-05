@@ -6,7 +6,7 @@ import (
 )
 
 // parseFunction returns nil is fn is not a valid function.
-func parseFunction(fn string) func(Calculator) {
+func parseFunction(fn string) func(*Calculator) {
 	switch fn {
 	case "sin", "cos", "tan":
 		return trig(fn)
@@ -24,8 +24,8 @@ func parseFunction(fn string) func(Calculator) {
 
 // trig returns a closure that performs the trig function specified by fn.
 // Panics if fn is not one of "sin", "cos" or "tan".
-func trig(fn string) func(Calculator) {
-	return func(c Calculator) {
+func trig(fn string) func(*Calculator) {
+	return func(c *Calculator) {
 		if len(c.stack) <= 0 {
 			return
 		}
@@ -49,8 +49,8 @@ func trig(fn string) func(Calculator) {
 
 // invTrig returns a closure that performs the inverse trig function specified
 // by fn. Panics if fn is not one of "asin", "acos" or "atan".
-func invTrig(fn string) func(Calculator) {
-	return func(c Calculator) {
+func invTrig(fn string) func(*Calculator) {
+	return func(c *Calculator) {
 		if len(c.stack) <= 0 {
 			return
 		}
@@ -72,21 +72,21 @@ func invTrig(fn string) func(Calculator) {
 }
 
 // Convert radians to degrees.
-func deg(c Calculator) {
+func deg(c *Calculator) {
 	if n, err := c.stack.pop(); err == nil {
 		c.stack.push(radToDeg(n))
 	}
 }
 
 // Convert degrees to radians.
-func rad(c Calculator) {
+func rad(c *Calculator) {
 	if n, err := c.stack.pop(); err == nil {
 		c.stack.push(degToRad(n))
 	}
 }
 
 // Factorial (!).
-func fac(c Calculator) {
+func fac(c *Calculator) {
 	n, err := c.stack.pop()
 	if err != nil {
 		return
