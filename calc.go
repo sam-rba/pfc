@@ -67,7 +67,7 @@ func (c *Calculator) performOperation(operator byte) error {
 	return nil
 }
 
-// operands returns the operands of an arithmetic operation.
+// operands returns the left and right operands, or error if there are not enough.
 func (c *Calculator) operands() (lhs, rhs float64, err error) {
 	if buf, err := c.parseBuffer(); err == nil {
 		rhs = buf
