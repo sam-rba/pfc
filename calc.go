@@ -69,10 +69,9 @@ func (c *Calculator) performOperation(operator byte) error {
 
 // operands returns the left and right operands, or error if there are not enough.
 func (c *Calculator) operands() (lhs, rhs float64, err error) {
-	if buf, err := c.parseBuffer(); err == nil {
-		rhs = buf
+	if rhs, err := c.parseBuffer(); err == nil {
 		lhs, err = c.stack.pop()
-		return lhs, rhs, nil
+		return lhs, rhs, err
 	} else if stk, err := c.stack.pop(); err == nil {
 		rhs = stk
 		if lhs, err = c.stack.pop(); err == nil {
