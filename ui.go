@@ -54,9 +54,7 @@ func (ui UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			ui.calc.negate()
 		case "+", "-", "*", "/", "%", "^":
 			operator := msg.String()[0]
-			if err := ui.calc.performOperation(operator); err != nil {
-				panic(err)
-			}
+			ui.calc.performOperation(operator)
 		case "backspace":
 			if len(ui.calc.buf) > 0 {
 				ui.calc.buf = ui.calc.buf[:len(ui.calc.buf)-1]

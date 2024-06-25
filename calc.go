@@ -51,20 +51,17 @@ func (c *Calculator) negate() {
 }
 
 // performOp performs the specified arithmetic operation.
-func (c *Calculator) performOperation(operator byte) error {
+func (c *Calculator) performOperation(operator byte) {
 	fn, err := parseOperator(operator)
 	if err != nil {
-		return err
+		return
 	}
-
 	lhs, rhs, err := c.operands()
 	if err != nil {
-		return err
+		return
 	}
-
 	c.stack.push(fn(lhs, rhs))
 	c.buf = ""
-	return nil
 }
 
 // operands returns the left and right operands, or error if there are not enough.
