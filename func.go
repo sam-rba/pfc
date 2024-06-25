@@ -20,6 +20,12 @@ func parseFunction(fn string) func(*Calculator) {
 		return fac
 	case "ch": // choose
 		return combination
+	case "log10":
+		return log10
+	case "log2":
+		return log2
+	case "ln":
+		return ln
 	}
 	return nil
 }
@@ -148,6 +154,33 @@ func factorial(n uint) uint {
 		n *= i
 	}
 	return n
+}
+
+// decimal logarithm.
+func log10(c *Calculator) {
+	x, err := c.stack.pop()
+	if err != nil {
+		return
+	}
+	c.stack.push(math.Log10(x))
+}
+
+// binary logarithm.
+func log2(c *Calculator) {
+	x, err := c.stack.pop()
+	if err != nil {
+		return
+	}
+	c.stack.push(math.Log2(x))
+}
+
+// natural logarithm.
+func ln(c *Calculator) {
+	x, err := c.stack.pop()
+	if err != nil {
+		return
+	}
+	c.stack.push(math.Log(x))
 }
 
 func isUint(n float64) bool {
