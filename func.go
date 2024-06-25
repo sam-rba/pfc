@@ -17,7 +17,12 @@ func parseFunction(fn string) func(*Calculator) {
 	case "rad":
 		return apply(degToRad)
 	case "fac":
-		return fac
+		return apply(func(x float64) float64 {
+			if !isUint(x) {
+				return x
+			}
+			return float64(factorial(uint(x)))
+		})
 	case "ch": // choose
 		return combination
 	case "log10":
@@ -99,17 +104,16 @@ func radToDeg(rad float64) (deg float64) {
 	return rad * 180 / math.Pi
 }
 
-// Factorial (!).
-func fac(c *Calculator) {
-	n, err := c.stack.pop()
-	if err != nil {
-		return
+// factorial returns n! (n factorial).
+func factorial(n uint) uint {
+	if n == 0 {
+		return 1
 	}
-	if !isUint(n) { // undefined on non-ints
-		c.stack.push(n)
-		return
+	// n! = n*(n-1)!
+	for i := n - 1; i > 1; i-- {
+		n *= i
 	}
-	c.stack.push(float64(factorial(uint(n))))
+	return n
 }
 
 // Combination function. "n choose k" with integers n and k such that n >= k >= 0.
@@ -140,18 +144,6 @@ func combination(c *Calculator) {
 		n, k := uint(n), uint(k)
 		c.stack.push(float64(factorial(n) / (factorial(k) * factorial(n-k))))
 	}
-}
-
-// factorial returns n! (n factorial).
-func factorial(n uint) uint {
-	if n == 0 { // 0! = 1
-		return 1
-	}
-	// n! = n*(n-1)!
-	for i := n - 1; i > 1; i-- {
-		n *= i
-	}
-	return n
 }
 
 func isUint(n float64) bool {
