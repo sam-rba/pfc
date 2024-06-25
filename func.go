@@ -13,21 +13,33 @@ func parseFunction(fn string) func(*Calculator) {
 	case "asin", "acos", "atan":
 		return invTrig(fn)
 	case "deg":
-		return deg
+		return apply(radToDeg)
 	case "rad":
-		return rad
+		return apply(degToRad)
 	case "fac":
 		return fac
 	case "ch": // choose
 		return combination
 	case "log10":
-		return log10
+		return apply(math.Log10)
 	case "log2":
-		return log2
+		return apply(math.Log2)
 	case "ln":
-		return ln
+		return apply(math.Log)
 	}
 	return nil
+}
+
+// apply returns a function that applies fn to the bottom stack element of the
+// calculator.
+func apply(fn func(float64) float64) func(*Calculator) {
+	return func(c *Calculator) {
+		x, err := c.stack.pop()
+		if err != nil {
+			return
+		}
+		c.stack.push(fn(x))
+	}
 }
 
 // trig returns a closure that performs the trig function specified by fn.
@@ -79,18 +91,12 @@ func invTrig(fn string) func(*Calculator) {
 	}
 }
 
-// Convert radians to degrees.
-func deg(c *Calculator) {
-	if n, err := c.stack.pop(); err == nil {
-		c.stack.push(radToDeg(n))
-	}
+func degToRad(deg float64) (rad float64) {
+	return deg * math.Pi / 180.0
 }
 
-// Convert degrees to radians.
-func rad(c *Calculator) {
-	if n, err := c.stack.pop(); err == nil {
-		c.stack.push(degToRad(n))
-	}
+func radToDeg(rad float64) (deg float64) {
+	return rad * 180 / math.Pi
 }
 
 // Factorial (!).
@@ -136,14 +142,6 @@ func combination(c *Calculator) {
 	}
 }
 
-func degToRad(deg float64) (rad float64) {
-	return deg * math.Pi / 180.0
-}
-
-func radToDeg(rad float64) (deg float64) {
-	return rad * 180 / math.Pi
-}
-
 // factorial returns n! (n factorial).
 func factorial(n uint) uint {
 	if n == 0 { // 0! = 1
@@ -154,33 +152,6 @@ func factorial(n uint) uint {
 		n *= i
 	}
 	return n
-}
-
-// decimal logarithm.
-func log10(c *Calculator) {
-	x, err := c.stack.pop()
-	if err != nil {
-		return
-	}
-	c.stack.push(math.Log10(x))
-}
-
-// binary logarithm.
-func log2(c *Calculator) {
-	x, err := c.stack.pop()
-	if err != nil {
-		return
-	}
-	c.stack.push(math.Log2(x))
-}
-
-// natural logarithm.
-func ln(c *Calculator) {
-	x, err := c.stack.pop()
-	if err != nil {
-		return
-	}
-	c.stack.push(math.Log(x))
 }
 
 func isUint(n float64) bool {
