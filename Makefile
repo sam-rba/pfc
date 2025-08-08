@@ -10,7 +10,7 @@ run: build
 	./pfc
 
 clean:
-	rm -f pfc
+	rm -f pfc pfc-v*
 
 doc:
 	sed "s/VERSION/${VERSION}/g" < doc/intro.1 | \
@@ -28,4 +28,14 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/pfc \
 		${DESTDIR}${MANPREFIX}/man1/pfc.1
 
-.PHONY: build run clean doc install uninstall
+release:
+	for os in ${GOOSES} ; do \
+		for arch in ${GOARCHES} ; do \
+			bin=pfc-v${VERSION}-$$os-$$arch; \
+			if [ $$os = "windows" ] ; then bin=$$bin.exe; fi; \
+			echo building $$bin; \
+			GOOS=$$os GOARCH=$$arch go build -o $$bin; \
+		done \
+	done
+
+.PHONY: build run clean doc install uninstall release
